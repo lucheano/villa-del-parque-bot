@@ -1,1 +1,25 @@
+name: Cotizacion del dolar
 
+on:
+  schedule:
+    # 12:00 a 20:00 UTC = 09:00 a 17:00 de Argentina
+    # Lunes a viernes
+    - cron: "0 12-20 * * 1-5"
+
+  workflow_dispatch:
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Publicar cotizaciones
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python dolar.py
