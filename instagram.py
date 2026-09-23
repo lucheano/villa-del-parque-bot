@@ -9,10 +9,11 @@ CHAT_ID = "-1001243627353"
 def main():
     token = os.environ["TELEGRAM_BOT_TOKEN"].strip()
 
-    texto = (
-        "📸 <b>¡Seguinos en Instagram!</b>\n\n"
-        "👉 <b>@envilladelparque</b>"
-    )
+texto = (
+    "📸 <b>¡Seguinos en Instagram!</b>\n\n"
+    '👉 <a href="https://www.instagram.com/envilladelparque/">'
+    '<b>@envilladelparque</b></a>'
+)
 
     datos = urllib.parse.urlencode({
         "chat_id": CHAT_ID,
