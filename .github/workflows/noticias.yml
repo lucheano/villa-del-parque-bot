@@ -1,0 +1,44 @@
+name: Noticias Villa del Parque
+
+on:
+  schedule:
+    # Cada hora, de 08:00 a 22:00 hora Argentina
+    # GitHub Actions usa UTC: 11:00 a 01:00 UTC
+    - cron: "0 11-23 * * *"
+    - cron: "0 0-1 * * *"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  noticias:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Buscar noticias nuevas
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python noticias.py
+
+      - name: Guardar noticias procesadas
+        run: |
+          if [ -f noticias_publicadas.json ]; then
+            git config user.name "Villa del Parque Bot"
+            git config user.email "bot@users.noreply.github.com"
+            git add noticias_publicadas.json
+
+            if ! git diff --cached --quiet; then
+              git commit -m "Actualizar noticias procesadas"
+              git push
+            fi
+          fi
